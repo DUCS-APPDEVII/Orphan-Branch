@@ -43,3 +43,4 @@ The DUWeather App project is the Spring semester project for CSCI 357, Applicati
 - [Navigating between screens](https://reactnative.dev/docs/navigation)
 - [React Navigation Docs](https://reactnavigation.org/docs/getting-started)
 - [Expo Icon List](https://icons.expo.fyi/Index)
+- [Example Typing React Navigation](https://jscrambler.com/blog/getting-started-with-react-navigation-v6-and-typescript-in-react-native)

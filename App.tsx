@@ -1,71 +1,78 @@
 /*
-File: App.tsx          Date: 1/25/2024
-   This file provides navigation for the MyWeather app.  See the README.md file
-   for the application specifications
+  File App.tsx                  Date: 1/29/2024
 
-   Modification Log
-   1/28/2024 Adapted the 2023 starter code to use Typescipt.  S. Sigman
-*/
-import { NavigationContainer, StackActions } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from '@expo/vector-icons/Ionicons';
+  This file illustrates how to nest navigators and how to 
+  provide static typing in TypeScript. The React Navigation
+  package is used.  Annotated links for additional information 
+  follow: 
+  
+  (Link 1) Video 82 in the React Native Tutorial from Codevolution provides
+           a good discussion of nesting naviators.  The approach it 
+           presents is used in this code sample.  This example does not 
+           use TypeScript, but minus static type checking works. 
+           https://www.youtube.com/watch?v=aDqSrYXbC0o&list=PLC3y8-rFHvwhiQJD1di4eRVN30WWCXkg1&index=82
+  
+  (Link 2)The React Navigation documentation page, "Type checking with TypeScript"
+          provides a nice guide to typing React Navigation components. It requires
+          careful reading, but the information is all there.
+          https://reactnavigation.org/docs/typescript/#annotating-options-and-screenoptions
 
-import CurrentWeather from './screens/CurrentWeather';
-import Location from './screens/Location';
+  (Link 3)The blog article from jscrambler, "Getting Started with React Navigation v6
+          and TypeScript in React Native" provides a good walkthrough of the of 
+          nesting and typing React Navigation navigators.        
+          https://jscrambler.com/blog/getting-started-with-react-navigation-v6-and-typescript-in-react-native
 
-const Tab = createBottomTabNavigator();
+  Modification Log
+  02/02/2024  Adapted the code to use types from a project
+              types file located at ../navigation/types.ts
+              S. Sigman
+              
+ */
+import { StyleSheet } from 'react-native';
 
-const App =() => {
-    return (
-        <NavigationContainer>
-          <Tab.Navigator
-            screenOptions={({route}) => ({
-              tabBarIcon: ({focused, color, size}) => {
-                let iconName : keyof typeof Ionicons.glyphMap = 'home'
-                if (route.name ==='CurrentWeather') {
-                  iconName = focused 
-                    ? 'home'
-                    : 'home-outline';
-                } else if (route.name==='Location') {
-                  iconName = focused ? 'list' : 'list-outline';
-                }
-                return <Ionicons name={iconName} size={size} color={color} />
-              },
-              tabBarActiveTintColor: '#03DAC6',
-              tabBarInactiveTintColor: '#018786',
-              tabBarActiveBackgroundColor: '#6200EE',
-              tabBarInactiveBackgroundColor: '#3700B3'
-            })}
-          >
-            <Tab.Screen
-              name="CurrentWeather"
-              component={CurrentWeather}
-              options={ {
-                title: 'MyWeather', 
-                headerStyle: {
-                  backgroundColor: '#6200EE',
-                },
-                headerTitleStyle: {
-                  color: '#fff',
-                },
-              }}
-            />
-            <Tab.Screen 
-              name ='Location'
-              component={Location}
-              options={ {
-                title: 'Locations',
-                headerStyle: {
-                  backgroundColor: '#6200EE',
-                },
-                headerTitleStyle: {
-                  color: '#fff',
-                },
-              }} 
-            />
-          </Tab.Navigator>
-        </NavigationContainer>
-    );
-};
+import { NavigationContainer } from "@react-navigation/native"
+import type { NativeStackNavigationOptions } from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import Login from "./screens/Login"
+import { AuthWeatherApp } from './navigation/AuthWeatherApp';
+import { RootStackNavParamsList } from './navigation/types'
 
-export default App;
+/* type RootStackParamsList = {
+  Login: undefined,
+  AuthWeatherApp: { name: string } | undefined,
+} */
+
+const Stack = createNativeStackNavigator<RootStackNavParamsList>()
+
+const scrnOptions: NativeStackNavigationOptions = { 
+  headerStyle: {
+    backgroundColor: '#6200EE',
+  },
+  headerTintColor: '#fff',
+}
+
+export default function App() {
+  return (
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={scrnOptions}>
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen 
+            name="AuthWeatherApp"
+            component={AuthWeatherApp}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
